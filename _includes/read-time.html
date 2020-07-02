@@ -1,21 +1,13 @@
-{% if post.layout != post %}
+{% assign words_per_minute = site.words_per_minute | default: 200 %}
+
+{% if post.read_time %}
   {% assign words = post.content | strip_html | number_of_words %}
-  {% if words < 180 %}
-    less than 1 minute read
-  {% elsif words < 360 %}
-    1 minute read
-  {% else %}
-    {{ words | divided_by:180 }} minute read
-  {% endif %}
+{% elsif page.read_time %}
+  {% assign words = page.content | strip_html | number_of_words %}
 {% endif %}
 
-{% if post.layout == post %}
-  {% assign words = content | number_of_words %}
-  {% if words < 180 %}
-    less than 1 minute read
-  {% elsif words < 360 %}
-    1 minute read
-  {% else %}
-    {{ words | divided_by:180 }} minute read
-  {% endif %}
+{% if words < words_per_minute %}
+  ~1 {{ site.data.theme.t.min_read | default: 'min read' }}
+{% else %}
+  {{ words | divided_by:words_per_minute }} {{ site.data.theme.t.min_read | default: 'min read' }}
 {% endif %}
